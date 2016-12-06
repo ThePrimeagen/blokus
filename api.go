@@ -1,6 +1,9 @@
 package blokus
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 /*
 PieceGroup is great
@@ -25,8 +28,8 @@ type Piece struct {
 func (p *Piece) String() string {
 	outStr := ""
 
-	for col := 0; col < p.Col; col++ {
-		for row := 0; row < p.Row; row++ {
+	for row := 0; row < p.Row; row++ {
+		for col := 0; col < p.Col; col++ {
 			if p.Value[row][col] == 0 {
 				outStr += "   "
 			} else {
@@ -54,8 +57,8 @@ Solved is great
 */
 func (b *Board) Solved() bool {
 	solved := true
-	for col := 0; col < b.Col && solved; col++ {
-		for row := 0; row < b.Row && solved; row++ {
+	for row := 0; row < b.Row && solved; row++ {
+		for col := 0; col < b.Col && solved; col++ {
 			solved = b.Value[row][col] == 1
 		}
 	}
@@ -64,20 +67,25 @@ func (b *Board) Solved() bool {
 }
 
 func (b *Board) String() string {
-	outStr := ""
+	outStr := "{\n"
 
-	for col := 0; col < b.Col; col++ {
-		for row := 0; row < b.Row; row++ {
+	for row := 0; row < b.Row; row++ {
+		outStr += "{"
+		for col := 0; col < b.Col; col++ {
 			if b.Value[row][col] == 0 {
-				outStr += "[ ]"
+				outStr += "0"
 			} else {
-				outStr += "[x]"
+				outStr += "1"
+			}
+			if col < b.Col-1 {
+				outStr += ","
 			}
 		}
 
-		outStr += "\n"
+		outStr += "},\n"
 	}
 
+	outStr += "}\n"
 	return outStr
 }
 
@@ -119,6 +127,26 @@ func (b *Board) Add(p *Piece, row, col int) bool {
 	}
 
 	return true
+}
+
+/*
+Key thats more like it
+*/
+func (b *Board) Key() string {
+	cKey := 0
+	rKey := 0
+
+	// go 64 bit system
+	for r := 0; r < b.Row; r++ {
+		for c := 0; c < b.Col; c++ {
+			if b.Value[r][c] == 1 {
+				cKey += int(math.Pow10(c + 1))
+				rKey += int(math.Pow10(r + 1))
+			}
+		}
+	}
+
+	return string(cKey) + ":" + string(rKey)
 }
 
 /*
