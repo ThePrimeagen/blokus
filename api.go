@@ -113,7 +113,6 @@ func NewBoard(size int) *Board {
 
 	board.Value = boardValue
 
-	fmt.Println("Count " + string(size*size))
 	board.solvedCount = size * size
 	return &board
 }
@@ -202,7 +201,7 @@ func decOnesAndTwos(b *Board, row, col int) {
 		val := b.Value[row-1][col] - 1
 		if val == 3 {
 			b.ones--
-			incDecTwos(b, row-1, col, -1)
+			incDecTwos(b, row-1, col, 1)
 		}
 		b.Value[row-1][col] = val
 	}
@@ -210,7 +209,7 @@ func decOnesAndTwos(b *Board, row, col int) {
 		val := b.Value[row+1][col] - 1
 		if val == 3 {
 			b.ones--
-			incDecTwos(b, row+1, col, -1)
+			incDecTwos(b, row+1, col, 1)
 		}
 		b.Value[row+1][col] = val
 	}
@@ -218,7 +217,7 @@ func decOnesAndTwos(b *Board, row, col int) {
 		val := b.Value[row][col-1] - 1
 		if val == 3 {
 			b.ones--
-			incDecTwos(b, row, col-1, -1)
+			incDecTwos(b, row, col-1, 1)
 		}
 		b.Value[row][col-1] = val
 	}
@@ -226,7 +225,7 @@ func decOnesAndTwos(b *Board, row, col int) {
 		val := b.Value[row][col+1] - 1
 		if val == 3 {
 			b.ones--
-			incDecTwos(b, row, col+1, -1)
+			incDecTwos(b, row, col+1, 1)
 		}
 		b.Value[row][col+1] = val
 	}

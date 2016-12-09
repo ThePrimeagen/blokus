@@ -8,7 +8,45 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIsSolvableCorners(t *testing.T) {
+func TestCornerRemove(t *testing.T) {
+	b := NewBoard(5)
+	p := &Piece{1, 1,
+		true,
+		false,
+		[][]int{
+			{1},
+		},
+	}
+	after1 := [][]int{
+		{12, 2, 1, 1, 2},
+		{2, 0, 0, 0, 1},
+		{1, 0, 0, 0, 1},
+		{1, 0, 0, 0, 1},
+		{2, 1, 1, 1, 2},
+	}
+	b.Add(p, 0, 0)
+
+	assert.True(t, b.IsSolvable(), "Graph is still solvable")
+	assert.True(t, b.hasOne, "ones should be equal 1")
+	assert.Equal(t, 0, b.ones, "ones should be equal 1")
+	assert.Equal(t, after1, b.Value, fmt.Sprintf("Expected the Board to be equal %v", b))
+
+	b.Remove(p, 0, 0)
+	after2 := [][]int{
+		{2, 1, 1, 1, 2},
+		{1, 0, 0, 0, 1},
+		{1, 0, 0, 0, 1},
+		{1, 0, 0, 0, 1},
+		{2, 1, 1, 1, 2},
+	}
+
+	assert.False(t, b.hasOne, "ones should be equal 1")
+	assert.True(t, b.IsSolvable(), "Graph is still solvable")
+	assert.Equal(t, 0, b.ones, "ones should be equal 1")
+	assert.Equal(t, after2, b.Value, fmt.Sprintf("Expected the Board to be equal %v", b))
+}
+
+func TestOnesAndTwos(t *testing.T) {
 	b := NewBoard(5)
 	p1 := &Piece{2, 2,
 		false,
@@ -138,4 +176,75 @@ func TestIsSolvableCorners(t *testing.T) {
 	assert.Equal(t, 0, b.twos, "twos should be equal 1")
 	assert.False(t, b.hasOne, "hasOne == false")
 	assert.True(t, b.hasTwo, "hasTwo == true")
+}
+
+func TestMultiple(t *testing.T) {
+	b := NewBoard(5)
+	p1 := &Piece{2, 2,
+		false,
+		false,
+		[][]int{
+			{1, 1},
+			{0, 1},
+		},
+	}
+
+	p2 := &Piece{1, 1,
+		true,
+		false,
+		[][]int{
+			{1},
+		},
+	}
+
+	p3 := &Piece{2, 1,
+		false,
+		true,
+		[][]int{
+			{1},
+			{1},
+		},
+	}
+
+	p4 := &Piece{5, 1,
+		false,
+		false,
+		[][]int{
+			{1},
+			{1},
+			{1},
+			{1},
+			{1},
+		},
+	}
+
+	p5 := &Piece{1, 4,
+		false,
+		false,
+		[][]int{
+			{1, 1, 1, 1},
+		},
+	}
+
+	b.Add(p1, 0, 0)
+	b.Add(p2, 0, 2)
+	b.Add(p3, 0, 3)
+	b.Add(p4, 0, 4)
+	b.Add(p5, 3, 0)
+
+	after := [][]int{
+		{13, 14, 13, 14, 14},
+		{3, 11, 3, 12, 14},
+		{2, 2, 1, 3, 13},
+		{12, 12, 12, 12, 14},
+		{3, 2, 2, 3, 13},
+	}
+
+	assert.Equal(t, after, b.Value, fmt.Sprintf("Expected the Board to be equal %v", b))
+	assert.True(t, b.IsSolvable(), "Graph has p4 and p3")
+	assert.Equal(t, 0, b.ones, "ones should be equal 0")
+	assert.Equal(t, 0, b.twos, "twos should be equal 1")
+	assert.True(t, b.hasOne, "hasOne == true")
+	assert.True(t, b.hasTwo, "hasTwo == true")
+
 }
